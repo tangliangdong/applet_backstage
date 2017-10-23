@@ -1,0 +1,20 @@
+.menu-nav{
+    background: transparent;
+}
+.menu-nav .breadcrumb{
+    color: #000;
+}
+.menu-nav .breadcrumb:before{
+    color: #000;
+}
+.menu-nav .nav-list{
+    padding: 0 0 0 20px;
+}
+
+.collection .active-item{
+    background-color: #cccccc;
+}
+
+.float-right{
+    float: right;
+}

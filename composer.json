@@ -4,6 +4,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
+    "minimum-stability": "dev",
     "require": {
         "php": ">=7.0.0",
         "fideloper/proxy": "~3.3",
@@ -52,5 +53,11 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
-    }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    ]
 }

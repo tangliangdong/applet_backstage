@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class MenuController extends Controller {
 
-    public function menu_list(){
+    public function menu(){
         $menus = DB::table('menu')
             ->get();
 
@@ -25,73 +25,81 @@ class MenuController extends Controller {
 
             $item->list = $dish_list;
         }
+        return view('menu/menu',['list' => $menus]);
+    }
+
+    public function menu_type(){
+        $menus = DB::table('menu')
+            ->get();
         return json_encode($menus);
     }
 
-    public function menu_dishes($id){
+    public function menu_dishes(Request $request){
+        $id = $request->input('id');
         $menus = DB::table('menu_dish')
             ->where('menu_id',$id)
             ->get();
         return json_encode($menus);
     }
 
-    public function create_order($userId,Request $request){
-        $ids = $request->input('ids');
-        $sum_price = $request->input('sumPrice');
-        $arr = explode(',',$ids);
-        $time = time();
-        $order_number = $time.$userId;
-        $id = DB::table('complete_order')->insertGetId(
-            ['order_number' => $order_number, 'user_id' => $userId,'sum_price'=>$sum_price,'add_time'=>$time,'status'=>1]
-        );
-        if ($id>0){
-            foreach ($arr as $item){
-                $arr2 = explode(':',$item);
-
-                $dish = DB::table('menu_dish')
-                    ->where('id',$arr2[0])
-                    ->first();
-                $num = DB::table('order_dish')
-                    ->insert([
-                        'dish_price'=>$dish->dish_price,
-                        'dish_name'=>$dish->dish_name,
-                        'dish_count'=>$arr2[1],
-                        'src'=>$dish->src,
-                        'complete_order_id'=>$id,
-                    ]);
-            }
-            $data = Array('status'=>1);
-            return json_encode($data);
-        }
-    }
-
-    public function getIndent(Request $request){
-        $userId = $request->input('userId');
-        $indents = DB::table('complete_order')
-            ->where('user_id',$userId)
-            ->get();
-//        date_default_timezone_set('PRC');
-        for($i = 0;$i < count($indents);$i++){
-            $indents[$i]->addTime = date("Y-m-d H:i:s",$indents[$i]->add_time);
-        }
-        return json_encode($indents);
-    }
-
-    public function getDetailIndent(Request $request){
+    public function getDish(Request $request){
         $id = $request->input('id');
-        $dishes = DB::table('order_dish')
-            ->where('complete_order_id',$id)
-            ->get();
-
-        return json_encode($dishes);
-    }
-
-    public function getDishDetail(Request $request){
-        $id = $request->input('id');
-        $dishes = DB::table('menu_dish')
+        $menus = DB::table('menu_dish')
             ->where('id',$id)
             ->first();
-
-        return json_encode($dishes);
+        return json_encode($menus);
     }
+
+    /**
+     * 根据id获取菜单
+     * @param Request $request
+     * @return string
+     */
+    public function getMenu(Request $request){
+        $id = $request->input('id');
+        $menus = DB::table('menu')
+            ->where('id',$id)
+            ->first();
+        return json_encode($menus);
+    }
+
+    public function edit(Request $request){
+        $id = $request->input('dish_id');
+        $price = $request->input('dish_price');
+        $name = $request->input('dish_name');
+        $status = $request->input('isShow');
+        $menuType = $request->input('menu_type');
+
+        $num = DB::table('menu_dish')
+            ->where('id',$id)
+            ->update(['dish_price'=> $price,'dish_name'=>$name,'status'=>$status,'menu_id'=>$menuType]);
+        $arr = [];
+        if ($num>0){
+            $arr = ['status'=>1];
+        }else{
+            $arr = ['status'=>0];
+        }
+        return json_encode($arr);
+    }
+
+    public function menu_edit(Request $request){
+        $id = $request->input('menu_id');
+        $name = $request->input('menu_type_name');
+        $status = $request->input('menu_isShow');
+
+        $num = DB::table('menu')
+            ->where('id',$id)
+            ->update(['dish_type'=>$name,'status'=>$status]);
+        $arr = [];
+        if ($num>0){
+            $arr = ['status'=>1];
+        }else{
+            $arr = ['status'=>0];
+        }
+        return json_encode($arr);
+    }
+
+
+
+
 }

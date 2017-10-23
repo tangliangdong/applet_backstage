@@ -16,22 +16,52 @@ Route::get('/', function () {
 });
 
 // 小程序接口
-Route::get('/login','UserController@login');
+Route::get('/app/login','AppController@login');
 
 // 获取完整的菜单列表
-Route::get('/menus', 'MenuController@menu_list');
+Route::get('/app/menus', 'AppController@menu_list');
 
-// 根据菜单类别获取菜品
-Route::get('/getDishes/{id}', 'MenuController@menu_dishes');
+
 
 // 生成订单
-Route::get('/createOrder/{userId}', 'MenuController@create_order');
+Route::get('/app/createOrder/{userId}', 'AppController@create_order');
 
-Route::get('/getIndent', 'MenuController@getIndent');
+Route::get('/app/getIndent', 'AppController@getIndent');
 
-Route::get('/getDetailIndent', 'MenuController@getDetailIndent');
+Route::get('/app/getDetailIndent', 'AppController@getDetailIndent');
 
-Route::get('/getDishDetail', 'MenuController@getDishDetail');
+Route::get('/app/getDishDetail', 'AppController@getDishDetail');
 
-// 页面
+
+// 后台管理页面
 Route::get('/index', 'IndexController@index');
+
+Route::get('/menu', 'MenuController@menu');
+
+Route::get('/indent', 'IndentController@indent');
+
+Route::get('/user/usermanage', 'UserController@usermanage');
+
+// 获取所有菜的种类
+Route::post('/menu/menu_type', 'MenuController@menu_type');
+// 根据菜单类别获取菜品
+Route::post('/menu/getDishes', 'MenuController@menu_dishes');
+
+// 根据菜的id来获取彩品
+Route::post('/menu/getDish', 'MenuController@getDish');
+Route::post('/menu/getMenu', 'MenuController@getMenu');
+
+Route::post('/menu/edit', 'MenuController@edit');
+Route::post('/menu/menu_edit', 'MenuController@menu_edit');
+
+// 根据status获取订单列表
+Route::post('/indent/getIndentByStatus', 'IndentController@getIndentByStatus');
+
+// 根据订单获取 点的菜
+Route::post('/indent/getDishByIndent', 'IndentController@getDishByIndent');
+
+Route::post('/indent/handle', 'IndentController@handle');
+
+Route::post('/indent/complete', 'IndentController@complete');
+
+
